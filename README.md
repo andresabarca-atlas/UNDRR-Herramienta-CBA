@@ -1,3 +1,5 @@
+<img src="Figuras/UNDRR_logo.png" alt="drawing" width="200"/>
+
 # Herramienta de Análisis Costo-Beneficio (CBA) para Inversiones Resilientes 🇨🇷
 
 ![Status](https://img.shields.io/badge/Estado-Finalizado-success) ![Versión](https://img.shields.io/badge/Versión-3.1-blue) ![Licencia](https://img.shields.io/badge/Licencia-CC%20BY--NC--SA%204.0-lightgrey)
@@ -33,25 +35,17 @@ Para utilizar la herramienta, descargue el archivo `.xlsx` y siga estos pasos en
 
 La herramienta utiliza un enfoque probabilista, integrando:
 
-* **Amenaza:** Curvas de excedencia de pérdidas del GRAF (Global Risk Assessment Framework).
-* **Exposición:** Bases de datos de activos expuestos por cantón.
-* **Vulnerabilidad:** Funciones de fragilidad ajustadas por tipología y estado del activo.
-* **Economía:** Tasa de descuento social y precio sombra del carbono ($40/ton).
+* **Riesgo:** Estimados de pérdidas económicas anualizadas del GRAF (Global Risk Assessment Framework).
+* **Amenaza:** Resultados disponibles para terremotos e inundaciones
+* **Exposición:** Bases de datos de activos expuestos por cantón para los sectores: Vivienda, Educación, Salud, Infraestructura (carreteras)
+* **Vulnerabilidad:** Muestreo de pérdidas probables ajustadas por tipología y estado del activo.
+* **Economía verde:** Tasa de descuento social y precio sombra del carbono ($40/ton).
 
 ## ⚠️ Requisitos
 
 * Microsoft Excel 2016 o superior.
 * No requiere macros ni plugins externos.
 
-## 📄 Créditos y Autoría
-
-**Desarrollado por:**
-* **Andrés Abarca Jiménez PhD** - ATLAS Consulting (Consultor Principal)
-
-**Supervisión:**
-* UN Office for Disaster Risk Reduction (UNDRR) - Oficina Regional para las Américas y el Caribe.
-
-*Esta herramienta es de uso público para apoyar la toma de decisiones en gestión de riesgo de desastres. Los autores no se hacen responsables por decisiones de diseño final tomadas únicamente con base en este tamizaje.*
 
 ## 📜 Licencia
 
@@ -67,3 +61,15 @@ Bajo los siguientes términos:
 * **CompartirIgual** — Si remezcla, transforma o crea a partir del material, debe distribuir su contribución bajo la misma licencia del original.
 
 Para ver una copia de esta licencia, visite [https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es).
+
+## 📄 Créditos y Autoría
+
+**Desarrollado por:**
+* **Andrés Abarca Jiménez PhD** - ATLAS Consulting (Consultor Principal)
+
+**Supervisión:**
+* **UN Office for Disaster Risk Reduction (UNDRR)** - Oficina Regional para las Américas y el Caribe.
+
+*Esta herramienta es de uso público para apoyar la toma de decisiones en gestión de riesgo de desastres. Los autores no se hacen responsables por decisiones tomadas únicamente con base en este análisis.*
+
+<img src="Figuras/ATLAS-LogoIcon-Full.png" alt="drawing" width="200"/>
