@@ -2,7 +2,7 @@
 
 # Herramienta de Análisis Costo-Beneficio (CBA) para Inversiones Resilientes 🇨🇷
 
-![Status](https://img.shields.io/badge/Estado-Finalizado-success) ![Versión](https://img.shields.io/badge/Versión-3.1-blue) ![Licencia](https://img.shields.io/badge/Licencia-CC%20BY--NC--SA%204.0-lightgrey)
+![Status](https://img.shields.io/badge/Estado-EnRevisión-orange) ![Versión](https://img.shields.io/badge/Versión-3.1-blue) ![Licencia](https://img.shields.io/badge/Licencia-CC%20BY--NC--SA%204.0-lightgrey)
 
 Este repositorio aloja la **Herramienta de Priorización de Inversiones** desarrollada en el marco de la consultoría para la **Oficina de las Naciones Unidas para la Reducción del Riesgo de Desastres (UNDRR)** y el Programa de Emergencia para la Reconstrucción Integral (PROERI) en Costa Rica.
 
