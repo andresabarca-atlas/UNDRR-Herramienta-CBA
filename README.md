@@ -1,4 +1,4 @@
-<img src="Figuras/UNDRR_logo.png" alt="drawing" width="200"/>
+<img src="Figuras/UNDRR_logo.png" alt="UNDRR Logo" width="200"/>
 
 # Herramienta de Análisis Costo-Beneficio (CBA) para Inversiones Resilientes 🇨🇷
 
@@ -35,11 +35,15 @@ Para utilizar la herramienta, descargue el archivo `.xlsx` y siga estos pasos en
 
 La herramienta utiliza un enfoque probabilista, integrando:
 
-* **Riesgo:** Estimados de pérdidas económicas anualizadas del GRAF (Global Risk Assessment Framework).
+* **Riesgo:** Estimados de pérdidas económicas anualizadas basadas en datos del GRAF (Global Risk Assessment Framework).
 * **Amenaza:** Resultados disponibles para terremotos e inundaciones
 * **Exposición:** Bases de datos de activos expuestos por cantón para los sectores: Vivienda, Educación, Salud, Infraestructura (carreteras)
 * **Vulnerabilidad:** Muestreo de pérdidas probables ajustadas por tipología y estado del activo.
-* **Economía verde:** Tasa de descuento social y precio sombra del carbono ($40/ton).
+* **Impacto Socio-Ambiental:** Tasa de descuento y precio social del carbono ($40/ton CO2e).
+
+A continuación se muestra un diagrama del flujo de cálculo de la herramienta:
+
+<img src="Figuras/Flowchart.png" class="center-image" alt="Diagrama de Flujo" width="700"/>
 
 ## ⚠️ Requisitos
 
