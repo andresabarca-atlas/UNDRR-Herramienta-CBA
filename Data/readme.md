@@ -1,4 +1,4 @@
-<img src="Figuras/UNDRR_logo.png" alt="UNDRR Logo" width="200"/>
+<img src="../Figuras/UNDRR_logo.png" alt="UNDRR Logo" width="200"/>
 
 # Datos para la Herramienta de Análisis Costo-Beneficio (CBA) para Inversiones Resilientes 🇨🇷
 
@@ -38,4 +38,4 @@ Para ver una copia de esta licencia, visite [https://creativecommons.org/license
 
 *Esta información es de uso público para apoyar la toma de decisiones en gestión de riesgo de desastres. Los autores no se hacen responsables por decisiones tomadas únicamente con base en este análisis.*
 
-<img src="Figuras/ATLAS-LogoIcon-Full.png" alt="drawing" width="200"/>
+<img src="../Figuras/ATLAS-LogoIcon-Full.png" alt="drawing" width="200"/>
