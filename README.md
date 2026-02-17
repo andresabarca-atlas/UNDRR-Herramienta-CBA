@@ -50,6 +50,14 @@ A continuación se muestra un diagrama del flujo de cálculo de la herramienta:
 * Microsoft Excel 2016 o superior.
 * No requiere macros ni plugins externos.
 
+## 📱 Versión Móvil (Web App) - BETA
+
+Hemos desarrollado una versión ligera de la herramienta con una muestra pequeña de datos para realizar estimaciones rápidas desde dispositivos móviles durante talleres.
+
+[**👉 Abrir Calculadora Web**](https://andresabarca-atlas.github.io/UNDRR-Herramienta-CBA/mobile-app/)
+
+*Nota: Esta versión web es para fines ilustrativos y utiliza datos precargados de 5 cantones representativos.*
+
 
 ## 📜 Licencia
 
