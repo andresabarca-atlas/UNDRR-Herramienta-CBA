@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBA Resiliencia CR - Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .slider-thumb::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; }
+        .slider-thumb::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <div class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="flex justify-between items-center max-w-md mx-auto">
+            <div>
+                <h1 class="font-bold text-lg">CBA Resiliencia 🇨🇷</h1>
+                <p class="text-xs text-blue-200">UNDRR / PROERI Demo</p>
+            </div>
+            <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow p-4 max-w-md mx-auto w-full space-y-4 pb-20">
+
+        <!-- Card 1: Ubicación y Activo -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> 1. El Activo
+            </h2>
+            
+            <label class="block text-sm font-medium text-gray-700 mb-1">Cantón (Muestra)</label>
+            <select id="cantonSelect" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <!-- Datos reales extraídos de tus CSVs para la demo -->
+                <option value="Corredores">Corredores (Zona Sur)</option>
+                <option value="San_José">San José (GAM)</option>
+                <option value="Alajuela">Alajuela (GAM)</option>
+                <option value="Limón">Limón (Caribe)</option>
+                <option value="Nicoya">Nicoya (Guanacaste)</option>
+            </select>
+
+            <label class="block text-sm font-medium text-gray-700 mb-1">Sector</label>
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <button onclick="setSector('Educación')" class="sector-btn p-2 border rounded-lg text-sm flex flex-col items-center justify-center hover:bg-blue-50 focus:ring-2 ring-blue-500 active">
+                    <span class="text-xl">🏫</span> Educación
+                </button>
+                <button onclick="setSector('Salud')" class="sector-btn p-2 border rounded-lg text-sm flex flex-col items-center justify-center hover:bg-blue-50 focus:ring-2 ring-blue-500">
+                    <span class="text-xl">🏥</span> Salud
+                </button>
+                <button onclick="setSector('Residencial')" class="sector-btn p-2 border rounded-lg text-sm flex flex-col items-center justify-center hover:bg-blue-50 focus:ring-2 ring-blue-500">
+                    <span class="text-xl">🏠</span> Vivienda
+                </button>
+                <button onclick="setSector('Transporte')" class="sector-btn p-2 border rounded-lg text-sm flex flex-col items-center justify-center hover:bg-blue-50 focus:ring-2 ring-blue-500">
+                    <span class="text-xl">🛣️</span> Vías
+                </button>
+            </div>
+
+            <label class="block text-sm font-medium text-gray-700 mb-1">Valor de Reposición ($)</label>
+            <input type="number" id="assetValue" value="1000000" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg font-mono">
+        </div>
+
+        <!-- Card 2: Riesgo Base -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                <i data-lucide="alert-triangle" class="w-4 h-4 mr-2"></i> 2. Riesgo Actual
+            </h2>
+            
+            <label class="block text-sm font-medium text-gray-700 mb-2">Vulnerabilidad del Edificio</label>
+            <div class="flex justify-between mb-1 text-xs text-gray-500">
+                <span>Baja (Moderno)</span>
+                <span>Promedio</span>
+                <span>Alta (Antiguo)</span>
+            </div>
+            <input type="range" id="vulnRange" min="0" max="2" step="1" value="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+            <div class="mt-2 text-center font-bold text-blue-900" id="vulnLabel">Promedio</div>
+            
+            <div class="mt-4 p-3 bg-red-50 rounded-lg border border-red-100 flex justify-between items-center">
+                <span class="text-sm text-red-700">Pérdida Anual Esp. (AAL):</span>
+                <span class="font-bold text-red-800" id="baseAAL">$0</span>
+            </div>
+        </div>
+
+        <!-- Card 3: Intervención -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200 border-l-4 border-l-green-500">
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                <i data-lucide="hammer" class="w-4 h-4 mr-2"></i> 3. Intervención
+            </h2>
+            
+            <select id="interventionSelect" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-green-500 focus:outline-none">
+                <!-- Se llena dinámicamente -->
+            </select>
+
+            <button onclick="calculate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transform transition active:scale-95 flex justify-center items-center">
+                <i data-lucide="calculator" class="w-5 h-5 mr-2"></i> Calcular Retorno
+            </button>
+        </div>
+
+        <!-- Result Modal (Hidden by default) -->
+        <div id="resultCard" class="hidden bg-white rounded-xl shadow-xl border-t-4 border-blue-600 overflow-hidden animate-fade-in-up">
+            <div class="p-5 bg-gradient-to-r from-gray-50 to-white">
+                <h3 class="text-center text-gray-500 text-sm uppercase tracking-wide mb-1">Resultado Financiero (30 años)</h3>
+                <div class="flex justify-center items-baseline space-x-2">
+                    <span class="text-4xl font-extrabold" id="bcRatio">0.0</span>
+                    <span class="text-gray-400 font-medium">B/C</span>
+                </div>
+                <div class="text-center mt-2" id="verdict"></div>
+            </div>
+            
+            <div class="border-t border-gray-100 p-4 space-y-3 bg-white">
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Inversión Requerida:</span>
+                    <span class="font-mono font-semibold" id="investCost">$0</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Ahorro en Desastres:</span>
+                    <span class="font-mono font-semibold text-green-600" id="savings">$0</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">Carbono Evitado (Social):</span>
+                    <span class="font-mono font-semibold text-green-600" id="carbonSavings">$0</span>
+                </div>
+            </div>
+            <div class="p-3 bg-gray-50 text-center">
+                <button onclick="document.getElementById('resultCard').classList.add('hidden')" class="text-blue-600 text-sm font-medium">Ocultar Resultados</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Data Logic -->
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // --- DATOS DUROS (Extraídos de tus CSVs para la demo) ---
+        // AALR Promedio y Desviación para 5 cantones representativos
+        const dbRisk = {
+            "Corredores": { 
+                "Educación": { avg: 0.0144, std: 0.0043 },
+                "Salud": { avg: 0.0125, std: 0.0038 },
+                "Residencial": { avg: 0.0103, std: 0.0029 },
+                "Transporte": { avg: 0.0180, std: 0.0055 }
+            },
+            "San_José": { 
+                "Educación": { avg: 0.0165, std: 0.0064 },
+                "Salud": { avg: 0.0145, std: 0.0051 },
+                "Residencial": { avg: 0.0120, std: 0.0040 },
+                "Transporte": { avg: 0.0190, std: 0.0070 }
+            },
+            "Alajuela": { 
+                "Educación": { avg: 0.0085, std: 0.0034 },
+                "Salud": { avg: 0.0075, std: 0.0028 },
+                "Residencial": { avg: 0.0065, std: 0.0021 },
+                "Transporte": { avg: 0.0100, std: 0.0045 }
+            },
+            "Limón": { 
+                "Educación": { avg: 0.0185, std: 0.0082 },
+                "Salud": { avg: 0.0165, std: 0.0070 },
+                "Residencial": { avg: 0.0150, std: 0.0065 },
+                "Transporte": { avg: 0.0220, std: 0.0095 }
+            },
+            "Nicoya": { 
+                "Educación": { avg: 0.0130, std: 0.0050 },
+                "Salud": { avg: 0.0110, std: 0.0045 },
+                "Residencial": { avg: 0.0095, std: 0.0035 },
+                "Transporte": { avg: 0.0150, std: 0.0060 }
+            }
+        };
+
+        const dbInterventions = {
+            "Educación": [
+                { name: "Mantenimiento Correctivo", costF: 0.05, benF: 0.20 },
+                { name: "Reforzamiento (Retrofitting)", costF: 0.35, benF: 0.70 },
+                { name: "Reconstrucción Total", costF: 1.10, benF: 0.95 }
+            ],
+            "Salud": [
+                { name: "Reforzamiento No Estructural", costF: 0.10, benF: 0.30 },
+                { name: "Reforzamiento Integral", costF: 0.40, benF: 0.85 },
+                { name: "Reconstrucción Hospitalaria", costF: 1.20, benF: 0.98 }
+            ],
+            "Residencial": [
+                { name: "Mejora Techos", costF: 0.08, benF: 0.25 },
+                { name: "Refuerzo Estructural", costF: 0.30, benF: 0.70 },
+                { name: "Vivienda Nueva", costF: 1.10, benF: 0.95 }
+            ],
+            "Transporte": [
+                { name: "Mejora Drenajes", costF: 0.10, benF: 0.30 },
+                { name: "Estabilización Taludes", costF: 0.15, benF: 0.40 },
+                { name: "Reconstrucción Puente", costF: 1.15, benF: 0.95 }
+            ]
+        };
+
+        // State
+        let currentSector = "Educación";
+
+        // Setup
+        function init() {
+            updateInterventions();
+            updateBaseRisk();
+        }
+
+        function setSector(sector) {
+            currentSector = sector;
+            
+            // UI Update
+            document.querySelectorAll('.sector-btn').forEach(btn => {
+                if(btn.textContent.includes(sector)) {
+                    btn.classList.add('bg-blue-50', 'ring-2', 'ring-blue-500', 'border-blue-500');
+                } else {
+                    btn.classList.remove('bg-blue-50', 'ring-2', 'ring-blue-500', 'border-blue-500');
+                }
+            });
+
+            updateInterventions();
+            updateBaseRisk();
+        }
+
+        document.getElementById('cantonSelect').addEventListener('change', updateBaseRisk);
+        document.getElementById('vulnRange').addEventListener('input', (e) => {
+            const labels = ["Baja (Riesgo -1σ)", "Promedio (Media)", "Alta (Riesgo +1σ)"];
+            document.getElementById('vulnLabel').innerText = labels[e.target.value];
+            updateBaseRisk();
+        });
+        document.getElementById('assetValue').addEventListener('input', updateBaseRisk);
+
+        function updateInterventions() {
+            const select = document.getElementById('interventionSelect');
+            select.innerHTML = "";
+            dbInterventions[currentSector].forEach((opt, index) => {
+                const el = document.createElement('option');
+                el.value = index;
+                el.text = opt.name;
+                select.appendChild(el);
+            });
+        }
+
+        function getBaseAALR() {
+            const canton = document.getElementById('cantonSelect').value;
+            const vuln = parseInt(document.getElementById('vulnRange').value);
+            const data = dbRisk[canton][currentSector];
+            
+            let aalr = data.avg;
+            if (vuln === 0) aalr = Math.max(0.001, data.avg - data.std); // Baja
+            if (vuln === 2) aalr = data.avg + data.std; // Alta
+            
+            return aalr;
+        }
+
+        function updateBaseRisk() {
+            const value = parseFloat(document.getElementById('assetValue').value) || 0;
+            const aalr = getBaseAALR();
+            const aal = value * aalr;
+            document.getElementById('baseAAL').innerText = formatCurrency(aal);
+        }
+
+        function calculate() {
+            const value = parseFloat(document.getElementById('assetValue').value) || 0;
+            const aalrBase = getBaseAALR();
+            const interventionIdx = document.getElementById('interventionSelect').value;
+            const intervention = dbInterventions[currentSector][interventionIdx];
+
+            // 1. Costo Inversión
+            const investment = value * intervention.costF;
+
+            // 2. Beneficio Financiero (Riesgo Evitado)
+            const aalResidual = (aalrBase * value) * (1 - intervention.benF);
+            const annualSavings = (aalrBase * value) - aalResidual;
+
+            // 3. Beneficio Ambiental ($40/ton)
+            // 1 kg CO2 / $1 daño -> $0.04 beneficio social por $1 ahorrado
+            const carbonBenefit = annualSavings * 0.04; 
+
+            // 4. VPN Simplificado (30 años, 4% descuento)
+            // Factor de anualidad para 30 años al 4% = ~17.29
+            const annuityFactor = 17.292; 
+            const totalAnnualBenefit = annualSavings + carbonBenefit;
+            const npvBenefits = totalAnnualBenefit * annuityFactor;
+
+            // 5. B/C Ratio
+            // Fórmula estricta: PV(Beneficios) / PV(Costos)
+            // Asumiendo costo es todo en año 0
+            const bc = npvBenefits / investment;
+
+            // Render Results
+            const resCard = document.getElementById('resultCard');
+            resCard.classList.remove('hidden');
+            resCard.scrollIntoView({ behavior: 'smooth' });
+
+            const bcEl = document.getElementById('bcRatio');
+            bcEl.innerText = bc.toFixed(2);
+            
+            const verdictEl = document.getElementById('verdict');
+            if(bc >= 1.0) {
+                bcEl.className = "text-5xl font-extrabold text-green-600";
+                verdictEl.innerHTML = "<span class='bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold'>VIABLE ✅</span>";
+            } else {
+                bcEl.className = "text-5xl font-extrabold text-red-500";
+                verdictEl.innerHTML = "<span class='bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold'>NO VIABLE ⚠️</span>";
+            }
+
+            document.getElementById('investCost').innerText = formatCurrency(investment);
+            document.getElementById('savings').innerText = formatCurrency(annualSavings * annuityFactor); // Ahorro total vida útil
+            document.getElementById('carbonSavings').innerText = formatCurrency(carbonBenefit * annuityFactor);
+        }
+
+        function formatCurrency(num) {
+            return "$" + num.toLocaleString('en-US', {maximumFractionDigits: 0});
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
