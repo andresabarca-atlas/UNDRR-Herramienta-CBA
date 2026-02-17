@@ -10,6 +10,10 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         .slider-thumb::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; }
         .slider-thumb::-moz-range-thumb { width: 20px; height: 20px; background: #3b82f6; cursor: pointer; border-radius: 50%; }
+        
+        /* Estilo específico para el slider de vida útil (verde para diferenciarlo) */
+        .slider-thumb-green::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #10b981; cursor: pointer; border-radius: 50%; }
+        .slider-thumb-green::-moz-range-thumb { width: 20px; height: 20px; background: #10b981; cursor: pointer; border-radius: 50%; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
@@ -70,7 +74,7 @@
                 <i data-lucide="alert-triangle" class="w-4 h-4 mr-2"></i> 2. Riesgo Actual
             </h2>
             
-            <label class="block text-sm font-medium text-gray-700 mb-2">Vulnerabilidad del Edificio</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Vulnerabilidad del Activo</label>
             <div class="flex justify-between mb-1 text-xs text-gray-500">
                 <span>Baja (Moderno)</span>
                 <span>Promedio</span>
@@ -95,6 +99,15 @@
                 <!-- Se llena dinámicamente -->
             </select>
 
+            <!-- SLIDER VIDA ÚTIL -->
+            <label class="block text-sm font-medium text-gray-700 mb-2">Vida Útil del Proyecto (Años)</label>
+            <div class="flex items-center space-x-3 mb-5">
+                <span class="text-xs text-gray-500 font-mono w-4">10</span>
+                <input type="range" id="lifeRange" min="10" max="50" step="5" value="30" class="flex-grow h-2 bg-green-100 rounded-lg appearance-none cursor-pointer slider-thumb-green">
+                <span class="text-xs text-gray-500 font-mono w-4">50</span>
+            </div>
+            <div class="text-center -mt-3 mb-4 font-bold text-green-700" id="lifeLabel">30 Años</div>
+
             <button onclick="calculate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transform transition active:scale-95 flex justify-center items-center">
                 <i data-lucide="calculator" class="w-5 h-5 mr-2"></i> Calcular Retorno
             </button>
@@ -103,7 +116,7 @@
         <!-- Result Modal (Hidden by default) -->
         <div id="resultCard" class="hidden bg-white rounded-xl shadow-xl border-t-4 border-blue-600 overflow-hidden animate-fade-in-up">
             <div class="p-5 bg-gradient-to-r from-gray-50 to-white">
-                <h3 class="text-center text-gray-500 text-sm uppercase tracking-wide mb-1">Resultado Financiero (30 años)</h3>
+                <h3 class="text-center text-gray-500 text-sm uppercase tracking-wide mb-1" id="resultHeader">Resultado Financiero</h3>
                 <div class="flex justify-center items-baseline space-x-2">
                     <span class="text-4xl font-extrabold" id="bcRatio">0.0</span>
                     <span class="text-gray-400 font-medium">B/C</span>
@@ -131,14 +144,21 @@
         </div>
 
     </div>
-
+    
+    <!-- Footer Logos -->
+    <div class="py-6 flex justify-center items-center space-x-6 opacity-70 mb-4">
+        <!-- NOTA: Ajusta 'Data/' a '../Data/' si mueves este archivo a una subcarpeta -->
+        <img src="Data/logo_undrr.png" alt="UNDRR" class="h-8 object-contain grayscale hover:grayscale-0 transition-all">
+        <div class="h-6 w-px bg-gray-300"></div>
+        <img src="Data/logo_atlas.png" alt="ATLAS Consulting" class="h-8 object-contain grayscale hover:grayscale-0 transition-all">
+    </div>
+    
     <!-- Data Logic -->
     <script>
         // Init Lucide Icons
         lucide.createIcons();
 
-        // --- DATOS DUROS (Extraídos de tus CSVs para la demo) ---
-        // AALR Promedio y Desviación para 5 cantones representativos
+        // --- DATOS DUROS ---
         const dbRisk = {
             "Corredores": { 
                 "Educación": { avg: 0.0144, std: 0.0043 },
@@ -184,7 +204,7 @@
                 { name: "Reconstrucción Hospitalaria", costF: 1.20, benF: 0.98 }
             ],
             "Residencial": [
-                { name: "Mejora Techos", costF: 0.08, benF: 0.25 },
+                { name: "Mejora Techos y Drenajes", costF: 0.08, benF: 0.25 },
                 { name: "Refuerzo Estructural", costF: 0.30, benF: 0.70 },
                 { name: "Vivienda Nueva", costF: 1.10, benF: 0.95 }
             ],
@@ -222,11 +242,16 @@
 
         document.getElementById('cantonSelect').addEventListener('change', updateBaseRisk);
         document.getElementById('vulnRange').addEventListener('input', (e) => {
-            const labels = ["Baja (Riesgo -1σ)", "Promedio (Media)", "Alta (Riesgo +1σ)"];
+            const labels = ["Baja (Riesgo -1σ)", "Promedio (Media)", "Alta (Riesgo +2σ)"];
             document.getElementById('vulnLabel').innerText = labels[e.target.value];
             updateBaseRisk();
         });
         document.getElementById('assetValue').addEventListener('input', updateBaseRisk);
+
+        // Listener para el Slider de Vida Útil
+        document.getElementById('lifeRange').addEventListener('input', (e) => {
+            document.getElementById('lifeLabel').innerText = e.target.value + " Años";
+        });
 
         function updateInterventions() {
             const select = document.getElementById('interventionSelect');
@@ -246,7 +271,7 @@
             
             let aalr = data.avg;
             if (vuln === 0) aalr = Math.max(0.001, data.avg - data.std); // Baja
-            if (vuln === 2) aalr = data.avg + data.std; // Alta
+            if (vuln === 2) aalr = data.avg + data.std * 2; // Alta
             
             return aalr;
         }
@@ -263,6 +288,8 @@
             const aalrBase = getBaseAALR();
             const interventionIdx = document.getElementById('interventionSelect').value;
             const intervention = dbInterventions[currentSector][interventionIdx];
+            const lifeYears = parseInt(document.getElementById('lifeRange').value);
+            const discountRate = 0.04; // 4% fijo (Social rate)
 
             // 1. Costo Inversión
             const investment = value * intervention.costF;
@@ -272,24 +299,24 @@
             const annualSavings = (aalrBase * value) - aalResidual;
 
             // 3. Beneficio Ambiental ($40/ton)
-            // 1 kg CO2 / $1 daño -> $0.04 beneficio social por $1 ahorrado
             const carbonBenefit = annualSavings * 0.04; 
 
-            // 4. VPN Simplificado (30 años, 4% descuento)
-            // Factor de anualidad para 30 años al 4% = ~17.29
-            const annuityFactor = 17.292; 
+            // 4. VPN Dinámico
+            // Factor de anualidad: (1 - (1+r)^-n) / r
+            const annuityFactor = (1 - Math.pow(1 + discountRate, -lifeYears)) / discountRate;
+            
             const totalAnnualBenefit = annualSavings + carbonBenefit;
             const npvBenefits = totalAnnualBenefit * annuityFactor;
 
             // 5. B/C Ratio
-            // Fórmula estricta: PV(Beneficios) / PV(Costos)
-            // Asumiendo costo es todo en año 0
             const bc = npvBenefits / investment;
 
             // Render Results
             const resCard = document.getElementById('resultCard');
             resCard.classList.remove('hidden');
             resCard.scrollIntoView({ behavior: 'smooth' });
+
+            document.getElementById('resultHeader').innerText = `Resultado Financiero (${lifeYears} años)`;
 
             const bcEl = document.getElementById('bcRatio');
             bcEl.innerText = bc.toFixed(2);
@@ -304,7 +331,7 @@
             }
 
             document.getElementById('investCost').innerText = formatCurrency(investment);
-            document.getElementById('savings').innerText = formatCurrency(annualSavings * annuityFactor); // Ahorro total vida útil
+            document.getElementById('savings').innerText = formatCurrency(annualSavings * annuityFactor); 
             document.getElementById('carbonSavings').innerText = formatCurrency(carbonBenefit * annuityFactor);
         }
 
